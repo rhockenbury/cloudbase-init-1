@@ -173,9 +173,15 @@ class CloudStack(base.BaseHTTPMetadataService):
         for _ in range(CONF.retry_count):
             try:
                 content = self._password_client(headers=headers).strip()
-            except http_client.HTTPConnection as exc:
-                LOG.error("Getting password failed: %s", exc)
+            except urllib.error.HTTPError as exc:
+                LOG.debug("Getting password failed: %s", exc.code)
                 continue
+            except Exception as exc:
+                if exc.errno == 10061:
+                    # Connection error
+                    LOG.debug("Getting password failed due to a "
+                              "connection failure.")
+                    continue
 
             if not content:
                 LOG.warning("The Password Server did not have any "
@@ -183,7 +189,7 @@ class CloudStack(base.BaseHTTPMetadataService):
                 continue
 
             if content == BAD_REQUEST:
-                LOG.error("The Password Server did not recognize the "
+                LOG.debug("The Password Server did not recognize the "
                           "request.")
                 break
 
@@ -212,16 +218,23 @@ class CloudStack(base.BaseHTTPMetadataService):
         for _ in range(CONF.retry_count):
             try:
                 content = self._password_client(headers=headers).strip()
-            except http_client.HTTPConnection as exc:
-                LOG.error("Removing password failed: %s", exc)
+            except urllib.error.HTTPError as exc:
+                LOG.debug("Removing password failed: %s", exc.code)
                 continue
+            except Exception as exc:
+                if exc.errno == 10061:
+                    # Connection error
+                    LOG.debug("Removing password failed due to a "
+                              "connection failure.")
+                    continue
+                raise
 
             if content != BAD_REQUEST:
                 LOG.info("The password was removed from the Password Server.")
-                break
-        else:
-            LOG.warning("Fail to remove the password from the "
-                        "Password Server.")
+            else:
+                LOG.debug("Failed to remove the password from the "
+                          "Password Server.")
+            break
 
     def get_admin_password(self):
         """Get the admin password from the Password Server.

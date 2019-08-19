@@ -198,7 +198,10 @@ class CloudStackTest(unittest.TestCase):
     @mock.patch('cloudbaseinit.metadata.services.cloudstack.CloudStack'
                 '._password_client')
     def test_get_password_fail(self, mock_password_client):
-        mock_password_client.side_effect = ["", cloudstack.BAD_REQUEST,
+        fake_error = urllib.error.HTTPError(url='127.0.0.1', code=404,
+                                            hdrs={}, fp=None, msg='error')
+        mock_password_client.side_effect = ["", fake_error,
+                                            cloudstack.BAD_REQUEST,
                                             cloudstack.SAVED_PASSWORD]
         expected_output = [
             ["Try to get password from the Password Server.",
@@ -207,6 +210,9 @@ class CloudStackTest(unittest.TestCase):
 
             ["Try to get password from the Password Server.",
              "The Password Server did not recognize the request."],
+
+            ["Try to get password from the Password Server.",
+             "Getting password failed: 404"],
 
             ["Try to get password from the Password Server.",
              "The Password Server did not have any password for the "
@@ -223,12 +229,19 @@ class CloudStackTest(unittest.TestCase):
     @mock.patch('cloudbaseinit.metadata.services.cloudstack.CloudStack'
                 '._password_client')
     def test_delete_password(self, mock_password_client):
-        mock_password_client.side_effect = [cloudstack.BAD_REQUEST,
+        fake_error = urllib.error.HTTPError(url='127.0.0.1', code=404,
+                                            hdrs={}, fp=None, msg='error')
+        mock_password_client.side_effect = [fake_error,
+                                            cloudstack.BAD_REQUEST,
                                             cloudstack.SAVED_PASSWORD]
         expected_output = [
             'Remove the password for this instance from the '
             'Password Server.',
-            'Fail to remove the password from the Password Server.',
+            'Removing password failed: 404',
+
+            'Remove the password for this instance from the '
+            'Password Server.',
+            'Failed to remove the password from the Password Server.',
 
             'Remove the password for this instance from the '
             'Password Server.',
