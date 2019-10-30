@@ -21,7 +21,7 @@ jobs:
     - name: Download external dependencies
       shell: powershell
       run: |
-        git clone "https://github.com/cloudbase/cloudbase-init-test-resources" cbs-test-res;
+        git clone "https://github.com/ader1990/cloudbase-init-test-resources-1" cbs-test-res;
         cd "cbs-test-res/${{ matrix.cloud }}";
         try {& "../bin/mkisofs.exe" -o "../../cloudbase-init-config-drive.iso" -ignore-error -ldots -allow-lowercase -allow-multidot -l -publisher "cbsl" -quiet -J -r -V "config-2" "cloudbase-init-metadata"} catch {}
     - name: Install local dependencies
