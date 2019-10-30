@@ -10,7 +10,7 @@ jobs:
       max-parallel: 100
       matrix:
         python-version: [3.6]
-        cloud: [openstack-http, openstack, maas, ovf, cloudstack, packet]
+        cloud: [packet]
 
     steps:
     - uses: actions/checkout@v1
@@ -31,11 +31,11 @@ jobs:
         pip install .
     - name: Run Cloudbase-Init
       run: |
-        powershell.exe Mount-DiskImage -ImagePath (Resolve-Path ./cloudbase-init-config-drive.iso) ^| Out-Null
-        powershell.exe winrm.cmd quickconfig -force -q ^| Out-Null
-        powershell.exe mkdir """./metadata""" ^| Out-Null; cp -recurse -force """E:\*""" """./metadata"""
-        powershell.exe (Get-Content """.\metadata\openstack\latest\network_data.json.template""").Replace("""REPLACE_MAC_ADDRESS""", ((Get-NetAdapter Ethernet).macaddress).Replace("""-""",""":"""))^|Set-Content """.\metadata\openstack\latest\network_data.json""" -Encoding Ascii
+        powershell.exe Mount-DiskImage -ImagePath (Resolve-Path ./cloudbase-init-config-drive.iso) | Out-Null
+        powershell.exe winrm.cmd quickconfig -force -q | Out-Null
+        powershell.exe mkdir """./metadata""" | Out-Null; cp -recurse -force """E:\*""" """./metadata"""
+        powershell.exe (Get-Content """.\metadata\openstack\latest\network_data.json.template""").Replace("""REPLACE_MAC_ADDRESS""", ((Get-NetAdapter Ethernet).macaddress).Replace("""-""",""":"""))|Set-Content """.\metadata\openstack\latest\network_data.json""" -Encoding Ascii
         powershell Start-Process -FilePath python.exe -ArgumentList """-m http.server""" -NoNewWindow -WorkingDirectory (Resolve-Path("""./metadata""")) 2>&1 >> http_server.log;
         powershell.exe cd "cbs-test-res/${{ matrix.cloud }}/"; cloudbase-init.exe --noreset_service_password --config-file ./cloudbase-init.conf 2>&1 >> cloudbase-init.log
         powershell cat ./cloudbase-init.log
-        powershell $errors = $(cat ./cloudbase-init.log ^| Where-Object {$_ -like """*error*"""}); $pluginExecution = $(cat ./cloudbase-init.log ^| Where-Object {$_ -like """*Plugins execution done*"""}); if ($errors -or !$pluginExecution) { exit 1; }
+        powershell $errors = $(cat ./cloudbase-init.log | Where-Object {$_ -like """*error*"""}); $pluginExecution = $(cat ./cloudbase-init.log | Where-Object {$_ -like """*Plugins execution done*"""}); if ($errors -or !$pluginExecution) { exit 1; }
