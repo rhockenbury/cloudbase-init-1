@@ -183,3 +183,15 @@ class TestBaseHTTPMetadataService(unittest.TestCase):
         ssl_error = requests.exceptions.SSLError()
         self._test_get_data(expected_response=ssl_error,
                             expected_value=exception.CertificateVerifyFailed)
+
+
+class TestEmptyMetadataService(unittest.TestCase):
+
+    def setUp(self):
+        self._service = base.EmptyMetadataService()
+
+    def test_get_name(self):
+        self.assertEqual(self._service.get_name(), 'EmptyMetadataService')
+
+    def test__get_data(self):
+        self.assertFalse(self._service._get_data('fake_path'))
