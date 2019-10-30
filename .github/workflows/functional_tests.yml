@@ -29,7 +29,7 @@ jobs:
         powershell.exe Mount-DiskImage -ImagePath (Resolve-Path ./cloudbase-init-config-drive.iso)
         powershell.exe winrm.cmd quickconfig -force -q
         powershell.exe get-psdrive
-        powershell.exe mkdir """./metadata"""; cp -recurse -force """D:\*""" """./metadata"""
+        powershell.exe mkdir """./metadata"""; cp -recurse -force """$((Get-DiskImage (Resolve-Path './cloudbase-init-config-drive.iso') | Get-Volume).DriveLetter):\*""" """./metadata"""
         powershell.exe (Get-Content """.\metadata\openstack\latest\network_data.json.template""").Replace("""REPLACE_MAC_ADDRESS""", ((Get-NetAdapter Ethernet).macaddress).Replace("""-""",""":"""))|Set-Content """.\metadata\openstack\latest\network_data.json""" -Encoding Ascii
         powershell Start-Process -FilePath python.exe -ArgumentList """-m http.server""" -NoNewWindow -WorkingDirectory (Resolve-Path("""./metadata""")) 2>&1 >> http_server.log;
         powershell.exe cd "cbs-test-res/${{ matrix.cloud }}/"; cloudbase-init.exe --noreset_service_password --config-file ./cloudbase-init.conf 2>&1 >> cloudbase-init.log
