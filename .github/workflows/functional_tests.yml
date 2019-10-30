@@ -10,7 +10,7 @@ jobs:
       max-parallel: 100
       matrix:
         python-version: [3.6]
-        cloud: [packet]
+        cloud: [empty]
 
     steps:
     - uses: actions/checkout@v1
