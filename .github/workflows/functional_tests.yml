@@ -26,15 +26,16 @@ jobs:
         try {& "../bin/mkisofs.exe" -o "../../cloudbase-init-config-drive.iso" -ignore-error -ldots -allow-lowercase -allow-multidot -l -publisher "cbsl" -quiet -J -r -V "config-2" "cloudbase-init-metadata"} catch {}
     - name: Run Cloudbase-Init
       run: |
-        powershell.exe Mount-DiskImage -ImagePath (Resolve-Path ./cloudbase-init-config-drive.iso)
-        powershell.exe winrm.cmd quickconfig -force -q
-        powershell.exe get-psdrive
-        powershell.exe mkdir "./metadata"; cp -recurse -force "$((Get-DiskImage (Resolve-Path './cloudbase-init-config-drive.iso') | Get-Volume).DriveLetter):\*" "./metadata"
-        powershell.exe (Get-Content ".\metadata\openstack\latest\network_data.json.template").Replace("REPLACE_MAC_ADDRESS", ((Get-NetAdapter Ethernet).macaddress).Replace("-",":"))|Set-Content ".\metadata\openstack\latest\network_data.json" -Encoding Ascii
-        powershell Start-Process -FilePath python.exe -ArgumentList "-m http.server" -NoNewWindow -WorkingDirectory (Resolve-Path("./metadata")) 2>&1 >> http_server.log;
-        powershell.exe cd "cbs-test-res/${{ matrix.cloud }}/"; cloudbase-init.exe --noreset_service_password --config-file ./cloudbase-init.conf 2>&1 >> cloudbase-init.log
-        powershell cat ./cloudbase-init.log
-        powershell $errors = $(cat ./cloudbase-init.log | Where-Object {$_ -like "*error*"}); $pluginExecution = $(cat ./cloudbase-init.log | Where-Object {$_ -like "*Plugins execution done*"}); if ($errors -or !$pluginExecution) { exit 1; }
+        $Erroractionpreference = "Continue"
+        Mount-DiskImage -ImagePath (Resolve-Path ./cloudbase-init-config-drive.iso);
+        winrm.cmd quickconfig -force -q;
+        get-psdrive;
+        mkdir "./metadata"; cp -recurse -force "$((Get-DiskImage (Resolve-Path './cloudbase-init-config-drive.iso') | Get-Volume).DriveLetter):\*" "./metadata";
+        if (Test-path ".\metadata\openstack\latest\network_data.json.template") {(Get-Content ".\metadata\openstack\latest\network_data.json.template").Replace("REPLACE_MAC_ADDRESS", ((Get-NetAdapter Ethernet).macaddress).Replace("-",":"))|Set-Content ".\metadata\openstack\latest\network_data.json" -Encoding Ascii;};
+        Start-Process -FilePath python.exe -ArgumentList "-m http.server" -NoNewWindow -WorkingDirectory (Resolve-Path("./metadata")) 2>&1 >> http_server.log;
+        cd "cbs-test-res/${{ matrix.cloud }}/"; cloudbase-init.exe --noreset_service_password --config-file ./cloudbase-init.conf 2>&1 >> cloudbase-init.log;
+        cat ./cloudbase-init.log;
+        $errors = $(cat ./cloudbase-init.log | Where-Object {$_ -like "*error*"}); $pluginExecution = $(cat ./cloudbase-init.log | Where-Object {$_ -like "*Plugins execution done*"}); if ($errors -or !$pluginExecution) { exit 1; };
     - name: Install local dependencies
       run: |
         python -m pip install --upgrade pip
