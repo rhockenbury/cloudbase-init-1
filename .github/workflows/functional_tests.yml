@@ -31,6 +31,11 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -c https://git.openstack.org/cgit/openstack/requirements/plain/upper-constraints.txt -U --force-reinstall -r requirements.txt
+        git clone https://github.com/ader1990/PyMI -b devel
+        pushd PyMI
+        pip install -r requirements.txt
+        pip install .
+        popd
         pip install .
     - name: Run Cloudbase-Init
       shell: powershell
