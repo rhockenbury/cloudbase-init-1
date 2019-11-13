@@ -34,7 +34,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -c https://git.openstack.org/cgit/openstack/requirements/plain/upper-constraints.txt -U --force-reinstall -r requirements.txt
         cd pymi
-        git checkout devel
+        try { git checkout devel } catch {}
         pip install -r requirements.txt
         pip install .
         cd ..
