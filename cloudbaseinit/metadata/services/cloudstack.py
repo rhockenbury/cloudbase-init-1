@@ -176,12 +176,13 @@ class CloudStack(base.BaseHTTPMetadataService):
             except urllib.error.HTTPError as exc:
                 LOG.debug("Getting password failed: %s", exc.code)
                 continue
-            except Exception as exc:
+            except OSError as exc:
                 if exc.errno == 10061:
                     # Connection error
                     LOG.debug("Getting password failed due to a "
                               "connection failure.")
                     continue
+                raise
 
             if not content:
                 LOG.warning("The Password Server did not have any "
@@ -221,7 +222,7 @@ class CloudStack(base.BaseHTTPMetadataService):
             except urllib.error.HTTPError as exc:
                 LOG.debug("Removing password failed: %s", exc.code)
                 continue
-            except Exception as exc:
+            except OSError as exc:
                 if exc.errno == 10061:
                     # Connection error
                     LOG.debug("Removing password failed due to a "
