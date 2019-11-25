@@ -27,7 +27,7 @@ jobs:
             & "../bin/mkisofs.exe" -o "../../cloudbase-init-config-drive.iso" -ignore-error -ldots -allow-lowercase -allow-multidot -l -publisher "cbsl" -quiet -J -r -V "config-2" "cloudbase-init-metadata" 2>&1 | %{ "$_" }
         } catch {}
         try {
-            & "../bin/mkisofs.exe" -o "../../cloudbase-init-config-drive-1.iso" -ignore-error -ldots -allow-lowercase -allow-multidot -l -publisher "cbsl" -quiet -J -r -V "cidata" "cloudbase-init-metadata" 2>&1 | %{ "$_" }
+            & "../bin/mkisofs.exe" -o "../../cloudbase-init-config-drive1.iso" -ignore-error -ldots -allow-lowercase -allow-multidot -l -publisher "cbsl" -quiet -J -r -V "cidata" "cloudbase-init-metadata" 2>&1 | %{ "$_" }
         } catch {}
     - name: Install local dependencies
       shell: powershell
