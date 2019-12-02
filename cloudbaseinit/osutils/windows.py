@@ -1742,3 +1742,6 @@ class WindowsUtils(base.BaseOSUtils):
         ls = info['FileVersionLS']
         return (win32api.HIWORD(ms), win32api.LOWORD(ms),
                 win32api.HIWORD(ls), win32api.LOWORD(ls))
+
+    def get_execution_environment_header(self):
+        return 'rem cmd\n'
