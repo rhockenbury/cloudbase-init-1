@@ -32,6 +32,8 @@ PLUGINS = {
              'cloudconfigplugins.groups.GroupsPlugin',
     'users': 'cloudbaseinit.plugins.common.userdataplugins.'
              'cloudconfigplugins.users.UsersPlugin',
+    'runcmd': 'cloudbaseinit.plugins.common.userdataplugins.'
+                'cloudconfigplugins.runcmd.RunCmdPlugin',
 }
 
 
