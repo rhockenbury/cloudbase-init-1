@@ -738,6 +738,9 @@ class WindowsUtils(base.BaseOSUtils):
             raise exception.CloudbaseInitException(
                 'w32tm failed to configure NTP.\nOutput: %(out)s\nError:'
                 ' %(err)s' % {'out': out, 'err': err})
+        else:
+            LOG.info("w32tm configured NTP. Command executed %s."
+                     "Output: %s" % (args,out))
 
     def get_network_adapter_name_by_mac_address(self, mac_address):
         iface_index_list = [
