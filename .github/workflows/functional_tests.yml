@@ -58,6 +58,7 @@ jobs:
         dir c:\\runcmd
         cat C:\\test_file
         cat C:\\test_append.ps1
+        w32tm /query /configuration
         $pluginExecution = $(cat ./cloudbase-init.log | Where-Object {$_ -like "*Plugins execution done*"})
         if ($errors -or !$pluginExecution) {
             exit 1
