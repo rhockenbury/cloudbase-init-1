@@ -27,14 +27,21 @@ LOG = oslo_logging.getLogger(__name__)
 class SetNtpPlugin(base.BaseCloudConfigPlugin):
     """Change the NTP servers according to the cloud-config userdata.
 
+    Following keys can be present:
+
+        enabled: Whether to enable the NTP change. Defaults to True.
+        servers: A list of NTP servers. Defaults to empty list.
+        pools: A list of NTP pool servers. Defaults to empty list.
+
+    Pools and servers lists are concatenated and applied to the NTP config.
     """
 
     def process(self, data):
         ntp_servers = []
-        ntp_servers.append(data.get('servers', []))
-        ntp_servers.append(data.get('pools', []))
+        ntp_servers.extend(data.get('servers', []))
+        ntp_servers.extend(data.get('pools', []))
 
-        if ntp_servers:
+        if data.get('enabled', True) and ntp_servers:
             LOG.info("Changing NTP servers to %s." % ntp_servers)
             osutils = factory.get_os_utils()
             osutils.set_ntp_client_config(ntp_servers)
