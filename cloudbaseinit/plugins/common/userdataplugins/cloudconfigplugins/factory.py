@@ -28,6 +28,10 @@ PLUGINS = {
                     'cloudconfigplugins.set_hostname.SetHostnamePlugin',
     'hostname': 'cloudbaseinit.plugins.common.userdataplugins.'
                 'cloudconfigplugins.set_hostname.SetHostnamePlugin',
+    'groups': 'cloudbaseinit.plugins.common.userdataplugins.'
+             'cloudconfigplugins.groups.GroupsPlugin',
+    'users': 'cloudbaseinit.plugins.common.userdataplugins.'
+             'cloudconfigplugins.users.UsersPlugin',
 }
 
 
