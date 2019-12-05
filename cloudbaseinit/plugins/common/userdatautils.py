@@ -15,6 +15,7 @@
 import collections
 import os
 import re
+import sys
 
 from oslo_log import log as oslo_logging
 
@@ -90,8 +91,10 @@ def execute_user_data_script(user_data):
         LOG.warning('An error occurred during user_data execution: \'%s\'',
                     exc)
     else:
-        LOG.debug('User_data stdout:\n%s', out)
-        LOG.debug('User_data stderr:\n%s', err)
+        if out:
+            LOG.debug('User_data stdout:\n%s', out.decode(sys.stdout.encoding))
+        if err:
+            LOG.debug('User_data stderr:\n%s', err.decode(sys.stdout.encoding))
 
     LOG.info('User_data script ended with return code: %d', ret_val)
     return ret_val
