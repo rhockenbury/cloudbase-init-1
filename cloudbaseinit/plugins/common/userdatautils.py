@@ -92,9 +92,9 @@ def execute_user_data_script(user_data):
                     exc)
     else:
         if out:
-            LOG.debug('User_data stdout:\n%s' % out.decode(errors='replace'))
+            LOG.info('User_data stdout:\n%s' % out.decode(errors='replace'))
         if err:
-            LOG.debug('User_data stderr:\n%s' % err.decode(errors='replace'))
+            LOG.info('User_data stderr:\n%s' % err.decode(errors='replace'))
 
     LOG.info('User_data script ended with return code: %d', ret_val)
     return ret_val
