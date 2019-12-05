@@ -60,6 +60,7 @@ jobs:
         cat C:\\test_append.ps1
         net user
         net localgroup
+        net user cloud-config-user
         w32tm /query /configuration
         $pluginExecution = $(cat ./cloudbase-init.log | Where-Object {$_ -like "*Plugins execution done*"})
         if ($errors -or !$pluginExecution) {
