@@ -218,7 +218,7 @@ class CommandExecutor(object):
 
     """Execute multiple commands and gather outputs."""
 
-    SEP = b"\n"            # multistring separator
+    SEP = b""            # multistring separator
 
     def __init__(self, commands):
         self._commands = commands
