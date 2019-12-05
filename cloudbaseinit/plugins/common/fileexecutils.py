@@ -12,6 +12,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import sys
+
 from oslo_log import log as oslo_logging
 
 from cloudbaseinit.plugins.common import userdatautils
@@ -32,8 +34,10 @@ def exec_file(file_path):
     except Exception as ex:
         LOG.warning('An error occurred during file execution: \'%s\'', ex)
     else:
-        LOG.debug('User_data stdout:\n%s', out)
-        LOG.debug('User_data stderr:\n%s', err)
+        if out:
+            LOG.debug('User_data stdout:\n%s', out.decode(sys.stdout.encoding))
+        if err:
+            LOG.debug('User_data stderr:\n%s', err.decode(sys.stdout.encoding))
 
     LOG.info('Script "%(file_path)s" ended with exit code: %(ret_val)d',
              {"file_path": file_path, "ret_val": ret_val})
