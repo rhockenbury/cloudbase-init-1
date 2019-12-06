@@ -31,9 +31,6 @@ class GCEOptions(conf_base.Options):
                 default="http://metadata.google.internal/computeMetadata/v1/",
                 help="The base URL where the service looks for metadata"),
             cfg.BoolOpt(
-                "add_metadata_private_ip_route", default=True,
-                help="Add a route for the metadata ip address to the gateway"),
-            cfg.BoolOpt(
                 "https_allow_insecure", default=False,
                 help="Whether to disable the validation of HTTPS "
                      "certificates."),

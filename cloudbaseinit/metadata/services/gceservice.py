@@ -16,10 +16,11 @@ from oslo_log import log as oslo_logging
 
 from cloudbaseinit import conf as cloudbaseinit_conf
 from cloudbaseinit.metadata.services import base
-from cloudbaseinit.utils import network
 
 CONF = cloudbaseinit_conf.CONF
 LOG = oslo_logging.getLogger(__name__)
+
+GCE_HEADERS = {'Metadata-Flavor': 'Google'}
 
 
 class GCEService(base.BaseHTTPMetadataService):
@@ -30,11 +31,21 @@ class GCEService(base.BaseHTTPMetadataService):
             https_allow_insecure=CONF.gce.https_allow_insecure,
             https_ca_bundle=CONF.gce.https_ca_bundle)
         self._enable_retry = True
+        self._instance_path = 'instance'
+        self._project_path = 'project'
+        self._instance_attributes_path = '%s/attributes' % self._instance_path
+        self._project_attributes_path = '%s/attributes' % self._project_path
+
+    def _http_request(self, url, data=None, headers=None, method=None):
+        if not headers:
+            headers = GCE_HEADERS
+        else:
+            headers.update(GCE_HEADERS)
+        return super(GCEService, self)._http_request(url, data,
+                                                     headers, method)
 
     def load(self):
         super(GCEService, self).load()
-        if CONF.gce.add_metadata_private_ip_route:
-            network.check_metadata_ip_route(CONF.gce.metadata_base_url)
 
         try:
             self.get_host_name()
@@ -46,18 +57,18 @@ class GCEService(base.BaseHTTPMetadataService):
             return False
 
     def get_host_name(self):
-        return self._get_cache_data('%s/meta-data/local-hostname' %
-                                    self._metadata_version, decode=True)
+        return self._get_cache_data('%s/name' % self._instance_path,
+                                    decode=True)
 
     def get_instance_id(self):
-        return self._get_cache_data('%s/meta-data/instance-id' %
-                                    self._metadata_version, decode=True)
+        return self._get_cache_data('%s/id' % self._instance_path,
+                                    decode=True)
 
     def get_user_data(self):
-        return self._get_cache_data('%s/user-data' %
-                                    self._metadata_version)
+        return self._get_cache_data(
+            '%s/startup-script' % self._instance_attributes_path,
+            decode=True)
 
     def get_public_keys(self):
         ssh_keys = []
-
         return ssh_keys
