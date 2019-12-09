@@ -66,9 +66,5 @@ class GCEService(base.BaseHTTPMetadataService):
 
     def get_user_data(self):
         return self._get_cache_data(
-            '%s/startup-script' % self._instance_attributes_path,
-            decode=True)
+            '%s/user-data' % self._instance_attributes_path)
 
-    def get_public_keys(self):
-        ssh_keys = []
-        return ssh_keys
