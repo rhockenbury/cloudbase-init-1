@@ -29,9 +29,10 @@ def get_template_manager(userdata):
 
     try:
         template_matcher = re.compile(r"##\s*template:(.*)", re.I)
-        template_engine = template_matcher.match(userdata.decode())
+        template_engine_match = template_matcher.match(userdata.decode())
 
-        if template_engine:
+        if template_engine_match:
+            template_engine = template_engine_match.group(1).lower().strip()
             if TEMPLATE_CLASS_PATHS.get(template_engine, None):
                 cl = classloader.ClassLoader()
                 return cl.load_class(TEMPLATE_CLASS_PATHS[template_engine])()
