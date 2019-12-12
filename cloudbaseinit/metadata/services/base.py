@@ -253,7 +253,7 @@ class BaseMetadataService(object):
         }
 
         ds_data = deepcopy(v1_data)
-        ds_data.extend({
+        ds_data.update({
             "hostname": hostname
         })
 
