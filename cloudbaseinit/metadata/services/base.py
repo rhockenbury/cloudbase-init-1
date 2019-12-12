@@ -252,16 +252,17 @@ class BaseMetadataService(object):
             "public_ssh_keys": self.get_public_keys()
         }
 
-        ds_data = deepcopy(v1_data)
-        ds_data.update({
+        ds_meta_data = deepcopy(v1_data)
+        ds_meta_data.update({
             "hostname": hostname
         })
 
         return {
             "v1": v1_data,
             "ds": {
-                "meta_data": ds_data,
-                "meta-data": ds_data
+                "meta_data": ds_meta_data,
+                "meta-data": ds_meta_data
+            }
         }
 
 
