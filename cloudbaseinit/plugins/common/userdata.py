@@ -26,6 +26,7 @@ from cloudbaseinit.plugins.common import execcmd
 from cloudbaseinit.plugins.common.userdataplugins import factory
 from cloudbaseinit.plugins.common import userdatautils
 from cloudbaseinit.utils import encoding
+from cloudbaseinit.utils.template_engine import factory as template_factory
 from cloudbaseinit.utils import x509constants
 
 
@@ -36,10 +37,13 @@ LOG = oslo_logging.getLogger(__name__)
 class UserDataPlugin(base.BasePlugin):
     _PART_HANDLER_CONTENT_TYPE = "text/part-handler"
     _GZIP_MAGIC_NUMBER = b'\x1f\x8b'
+    _service = None
 
     def execute(self, service, shared_data):
+        self._service = service
+
         try:
-            user_data = service.get_decoded_user_data()
+            user_data = self._service.get_decoded_user_data()
         except metadata_services_base.NotExistingMetadataException:
             return base.PLUGIN_EXECUTION_DONE, False
 
@@ -188,6 +192,14 @@ class UserDataPlugin(base.BasePlugin):
 
     def _process_non_multi_part(self, user_data):
         ret_val = None
+
+        template_engine = template_factory.get_template_manager(user_data)
+        if template_engine:
+            user_data = template_engine.render(
+                self._service.get_instance_data(),
+                user_data
+            )
+
         if user_data.startswith(b'#cloud-config'):
             user_data_plugins = factory.load_plugins()
             cloud_config_plugin = user_data_plugins.get('text/cloud-config')
