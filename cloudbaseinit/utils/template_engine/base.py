@@ -31,3 +31,7 @@ class BaseTemplateEngine(object):
         The return value will be an encoded string.
         """
         pass
+
+    def remove_template_definition(self, raw_template):
+        # Remove the first line, where the template definition
+        return raw_template.split(b"\n", 1)[1]

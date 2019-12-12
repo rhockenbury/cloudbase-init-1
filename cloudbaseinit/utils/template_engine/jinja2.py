@@ -29,7 +29,7 @@ class MissingJinjaVariable(DebugUndefined):
 
 class Jinja2TemplateEngine(object):
 
-    def render(self, data, template):
+    def render(self, data, raw_template):
         """Renders the template using Jinja2 template engine
 
         The data variable is a dict which contains the key-values
@@ -40,6 +40,9 @@ class Jinja2TemplateEngine(object):
 
         The return value will be an encoded string.
         """
-        template = Template(template.split(b"\n", 1).decode(), trim_blocks=True,
-                            undefined=MissingJinjaVariable,)
-        return template.render(**data).encode()
+
+        template = self.remove_template_definition(raw_template).decode()
+        jinja_template = Template(template,
+                                  trim_blocks=True,
+                                  undefined=MissingJinjaVariable,)
+        return jinja_template.render(**data).encode()
