@@ -225,8 +225,7 @@ class BaseMetadataService(object):
     def get_instance_data(self):
         """Returns a dictionary with instance data from the metadata source
 
-        InstanceData is a wrapper the based on the cloud-init specifications
-        for instance data.
+        The instance data structure is based on the cloud-init specifications:
         https://cloudinit.readthedocs.io/en/latest/topics/instancedata.html
 
 
@@ -252,6 +251,7 @@ class BaseMetadataService(object):
             "public_ssh_keys": self.get_public_keys()
         }
 
+        # Copy the v1 data to the ds.meta_data and add more fields
         ds_meta_data = deepcopy(v1_data)
         ds_meta_data.update({
             "hostname": hostname
