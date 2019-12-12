@@ -40,6 +40,6 @@ class Jinja2TemplateEngine(object):
 
         The return value will be an encoded string.
         """
-        template = Template(template.decode(), trim_blocks=True,
+        template = Template(template.split(b"\n", 1).decode(), trim_blocks=True,
                             undefined=MissingJinjaVariable,)
         return template.render(**data).encode()
