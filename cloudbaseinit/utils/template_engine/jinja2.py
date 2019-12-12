@@ -16,6 +16,8 @@ from jinja2 import DebugUndefined
 from jinja2.runtime import implements_to_string
 from jinja2 import Template
 
+from cloudbaseinit.utils.template_engine import base
+
 MISSING_JINJA_VARIABLE = u'CI_MISSING_JINJA_VAR/'
 
 
@@ -27,7 +29,7 @@ class MissingJinjaVariable(DebugUndefined):
         return u'%s%s' % (MISSING_JINJA_VARIABLE, self._undefined_name)
 
 
-class Jinja2TemplateEngine(object):
+class Jinja2TemplateEngine(base.BaseTemplateEngine):
 
     def render(self, data, raw_template):
         """Renders the template using Jinja2 template engine

@@ -234,9 +234,9 @@ class BaseMetadataService(object):
         for the instance data. In the future, it should reach parity with the
         cloud-init standard.
 
-        The ds namespace contains all the values the v1 namespace contains,
-        in order to be compatible with cloud-init, plus a limited set of
-        other instance data.
+        The ds.meta_data namespace contains all the values the v1 namespace
+        contains, in order to be compatible with cloud-init, plus a limited set
+        of other instance data.
         The ds namespace can change without prior notice and should not be
         used in production.
         """
@@ -259,7 +259,9 @@ class BaseMetadataService(object):
 
         return {
             "v1": v1_data,
-            "ds": ds_data
+            "ds": {
+                "meta_data": ds_data,
+                "meta-data": ds_data
         }
 
 
