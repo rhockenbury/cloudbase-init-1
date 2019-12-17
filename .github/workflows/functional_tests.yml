@@ -10,7 +10,7 @@ jobs:
       max-parallel: 100
       matrix:
         python-version: [3.6]
-        cloud: [openstack]
+        cloud: [openstack-http]
 
     steps:
     - uses: actions/checkout@v1
@@ -21,7 +21,7 @@ jobs:
     - name: Download external dependencies
       shell: powershell
       run: |
-        try { git clone "https://github.com/ader1990/cloudbase-init-test-resources-1" cbs-test-res -b user_data_template}catch{}
+        try { git clone "https://github.com/ader1990/cloudbase-init-test-resources-1" cbs-test-res -b install_qemu_ga}catch{}
         cd "cbs-test-res/${{ matrix.cloud }}"
         try {
             & "../bin/mkisofs.exe" -o "../../cloudbase-init-config-drive.iso" -ignore-error -ldots -allow-lowercase -allow-multidot -l -publisher "cbsl" -quiet -J -r -V "config-2" "cloudbase-init-metadata" 2>&1 | %{ "$_" }
