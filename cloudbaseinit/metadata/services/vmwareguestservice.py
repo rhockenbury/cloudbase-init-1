@@ -39,7 +39,7 @@ class VMwareGuestService(base.BaseMetadataService):
         super(VMwareGuestService, self).load()
 
         if not CONF.vmwareguest.vmware_rpctool_path:
-            LOG.info("rpctool_path is empty."
+            LOG.info("rpctool_path is empty. "
                      "Please provide a value for VMware rpctool path.")
             return False
 
@@ -47,7 +47,7 @@ class VMwareGuestService(base.BaseMetadataService):
             os.path.expandvars(CONF.vmwareguest.vmware_rpctool_path))
 
         if not os.path.exists(self._rpc_tool_path):
-            LOG.info("%s does not exist."
+            LOG.info("%s does not exist. "
                      "Please provide a valid value for VMware rpctool path."
                      % self._rpc_tool_path)
             return False
@@ -56,13 +56,13 @@ class VMwareGuestService(base.BaseMetadataService):
             self._meta_data = json.loads(
                 self._get_guestinfo_value('metadata')) or {}
         except exception.CloudbaseInitException as exc:
-            LOG.exc(exc)
+            LOG.exception(exc)
             return False
 
         return True
 
     def _get_guestinfo_value(self, key):
-        stdout, stderr, exit_code = self._os_utils.execute_process([
+        stdout, stderr, exit_code = self._osutils.execute_process([
             self._rpc_tool_path,
             'info-get guestinfo.%s' % key
         ])
