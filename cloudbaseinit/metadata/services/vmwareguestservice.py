@@ -38,13 +38,13 @@ class VMwareGuestService(base.BaseMetadataService):
     def load(self):
         super(VMwareGuestService, self).load()
 
-        if not CONF.vmwareguest.rpctool_path:
+        if not CONF.vmwareguest.vmware_rpctool_path:
             LOG.info("rpctool_path is empty."
                      "Please provide a value for VMware rpctool path.")
             return False
 
         self._rpc_tool_path = os.path.abspath(
-            os.path.expandvars(CONF.vmwareguest.rpctool_path))
+            os.path.expandvars(CONF.vmwareguest.vmware_rpctool_path))
 
         if not os.path.exists(self._rpc_tool_path):
             LOG.info("%s does not exist."
