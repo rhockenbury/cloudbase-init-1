@@ -209,3 +209,7 @@ class BaseOSUtils(object):
 
     def take_path_ownership(self, path, username=None):
         raise NotImplementedError()
+
+    def get_execution_environment_header(self):
+        """File header where the cloud-config runcmd will be aggregated."""
+        raise NotImplementedError()

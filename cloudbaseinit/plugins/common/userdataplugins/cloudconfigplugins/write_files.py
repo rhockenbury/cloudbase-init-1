@@ -149,7 +149,7 @@ class WriteFilesPlugin(base.BaseCloudConfigPlugin):
         permissions = _convert_permissions(item.get('permissions'))
 
         open_mode = "wb"
-        if item.get('append', False):
+        if item.get('append') is True:
             open_mode = "ab"
 
         _write_file(path, content, permissions, open_mode)
