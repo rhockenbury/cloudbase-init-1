@@ -10,7 +10,7 @@ jobs:
       max-parallel: 100
       matrix:
         python-version: [3.6]
-        cloud: [openstack-http, openstack, packet, ovf, maas]
+        cloud: [openstack-http, openstack, packet, ovf, maas, vmwareguest]
 
     steps:
     - uses: actions/checkout@v1
@@ -21,7 +21,7 @@ jobs:
     - name: Download external dependencies
       shell: powershell
       run: |
-        try { git clone "https://github.com/cloudbase/cloudbase-init-test-resources" cbs-test-res }catch{}
+        try { git clone "https://github.com/ader1990/cloudbase-init-test-resources-1" cbs-test-res }catch{}
         cd "cbs-test-res/${{ matrix.cloud }}"
         try {
             & "../bin/mkisofs.exe" -o "../../cloudbase-init-config-drive.iso" -ignore-error -ldots -allow-lowercase -allow-multidot -l -publisher "cbsl" -quiet -J -r -V "config-2" "cloudbase-init-metadata" 2>&1 | %{ "$_" }
@@ -55,6 +55,10 @@ jobs:
             & cmd /c "cloudbase-init.exe --noreset_service_password --config-file ./cloudbase-init.conf 2>&1" | Tee-Object -FilePath cloudbase-init.log
         } catch {}
         $errors = $(cat ./cloudbase-init.log | Where-Object {$_ -like "*error*"})
+        dir c:\\runcmd
+        cat C:\\test_file
+        cat C:\\test_append.ps1
+        w32tm /query /configuration
         $pluginExecution = $(cat ./cloudbase-init.log | Where-Object {$_ -like "*Plugins execution done*"})
         if ($errors -or !$pluginExecution) {
             exit 1
