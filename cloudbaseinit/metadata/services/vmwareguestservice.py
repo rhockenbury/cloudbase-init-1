@@ -18,6 +18,7 @@ import gzip
 import io
 import json
 import os
+import yaml
 from oslo_log import log as oslo_logging
 
 from cloudbaseinit import conf as cloudbaseinit_conf
@@ -53,7 +54,7 @@ class VMwareGuestService(base.BaseMetadataService):
             return False
 
         try:
-            self._meta_data = json.loads(
+            self._meta_data = yaml.load(
                 self._get_guestinfo_value('metadata')) or {}
         except exception.CloudbaseInitException as exc:
             LOG.exception(exc)
